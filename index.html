@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>생각조각집</title>
+<meta name="theme-color" content="#4E7A3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="생각조각집">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+img{max-width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="leaf a"></span><span class="leaf b"></span><span class="leaf c"></span>
+    <div class="brand"><h1>생각조각집</h1><span class="tag">마음에 남은 문장을 한 조각씩 모아 두는 곳</span></div>
+    <span class="count" id="count" hidden></span>
+  </header>
+
+  <div class="notice" id="setupNotice" hidden>아직 Firebase 설정값이 들어 있지 않아요. <b>config.js</b> 파일에 설정값을 붙여 넣어 주세요.</div>
+
+  <form class="login" id="loginBox" hidden>
+    <h2>다시 만나서 반가워요</h2>
+    <p>한 번 들어오면 이 기기에서는 계속 기억해 둘게요.</p>
+    <div><label for="email">이메일</label><input type="email" id="email" autocomplete="username" required></div>
+    <div><label for="pw">비밀번호</label><input type="password" id="pw" autocomplete="current-password" required></div>
+    <div class="actions"><span class="status" id="loginStatus"></span><button class="primary" type="submit">들어가기</button></div>
+  </form>
+
+  <nav class="chapters" id="chapterBar" hidden aria-label="챕터">
+    <div class="chips" id="filterChips"></div>
+    <form class="newchap" id="newChap" hidden>
+      <input type="text" id="newChapName" maxlength="12" placeholder="새 챕터 이름" aria-label="새 챕터 이름">
+      <button class="primary" type="submit">만들기</button>
+      <button class="ghost" type="button" id="newChapCancel">그만두기</button>
+    </form>
+  </nav>
+
+  <section class="today empty" id="today" aria-live="polite" hidden>
+    <div class="paper">
+    <span class="eyebrow">오늘 꺼내 본 조각</span>
+    <blockquote id="todayText"></blockquote>
+    <div class="meta"><span id="todayMeta"></span><button class="ghost" id="shuffle" hidden>다른 조각 꺼내기</button></div>
+    </div>
+  </section>
+
+  <section class="add" id="addBox" hidden>
+    <h2>조각 하나 담기</h2>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="사진 고르기">
+      <strong>사진에서 문장 가져오기</strong>
+      <small>책·캡처 사진을 고르면 글자를 읽어서 아래에 채워 줄게요</small>
+    </div>
+    <input type="file" id="file" accept="image/*" hidden>
+    <div class="preview" id="preview" hidden>
+      <img id="previewImg" alt="고른 사진">
+      <div class="side">
+        <span id="previewInfo"></span>
+        <label style="display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="keepImg" checked> 사진도 함께 보관</label>
+        <button class="ghost" id="clearImg" type="button" style="align-self:flex-start;padding-left:0">사진 빼기</button>
+      </div>
+    </div>
+    <div>
+      <label for="text">문장</label>
+      <textarea id="text" placeholder="직접 적어도 좋아요"></textarea>
+    </div>
+    <div>
+      <label>챕터</label>
+      <div class="chips" id="formChips"></div>
+    </div>
+    <div class="row">
+      <div><label for="date">날짜</label><input type="date" id="date"></div>
+      <div><label for="who">누구의 말 (선택)</label><input type="text" id="who" placeholder="예: 『책 제목』, 사람 이름"></div>
+    </div>
+    <div class="actions">
+      <span class="status" id="status"></span>
+      <button class="primary" id="save" type="button">담아 두기</button>
+    </div>
+  </section>
+
+  <section class="list" id="list" hidden>
+    <div class="list-head"><h2>모아 둔 조각들</h2><button id="excel" type="button" hidden>엑셀로 내려받기</button></div>
+    <div class="empty-list" id="emptyList">첫 번째 조각을 기다리고 있어요.</div>
+  </section>
+
+  <div class="foot" id="foot" hidden><span id="who-am-i"></span><button class="ghost" id="logout" type="button">나가기</button></div>
+</div>
+<div class="viewer" id="viewer" hidden><img id="viewerImg" alt="원본 사진"></div>
+
+<script type="module" src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
