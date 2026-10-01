@@ -106,3 +106,4 @@ input[type=email],input[type=password]{width:100%;box-sizing:border-box;font:inh
 .newchap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .newchap input{flex:1 1 160px;min-width:0}
 .item .chap{font-family:var(--f-display);font-size:.85rem;color:var(--brick);background:var(--accent-soft);border-radius:999px;padding:1px 10px;align-self:flex-start}
+.list-btns{display:flex;gap:6px;flex-wrap:wrap}

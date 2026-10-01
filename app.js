@@ -98,6 +98,7 @@ function renderList() {
   $("emptyList").hidden = qs.length > 0;
   $("emptyList").textContent = filter ? `「${filter}」 챕터의 첫 조각을 기다리고 있어요.` : "첫 번째 조각을 기다리고 있어요.";
   $("excel").hidden = quotes.length === 0;
+  $("copyAll").hidden = qs.length === 0;
   $("list").querySelector("h2").textContent = filter ? `「${filter}」 조각들` : "모아 둔 조각들";
   $("count").textContent = `조각 ${quotes.length}개`; $("count").hidden = !quotes.length;
   for (const q of qs) {
@@ -119,6 +120,8 @@ function renderList() {
       no.onclick = () => { pendingDelete = null; renderList(); };
       c.append(yes, no); tools.append(c);
     } else {
+      const cp = document.createElement("button"); cp.className = "ghost"; cp.textContent = "복사"; cp.style.paddingLeft = "0";
+      cp.onclick = () => copyText(pieceText(q), cp); tools.append(cp);
       const del = document.createElement("button"); del.className = "ghost"; del.textContent = "덜어 내기"; del.style.paddingLeft = "0";
       del.onclick = () => { pendingDelete = q.id; renderList(); }; tools.append(del);
     }
@@ -140,6 +143,28 @@ async function removeQuote(q) {
     if (q.hasImage) await deleteDoc(doc(imagesCol(), q.id));
   } catch (e) { renderList(); }
 }
+
+/* ---------- 복사 ---------- */
+const pieceText = q => q.text + (q.who ? "\n— " + q.who : "");
+async function copyText(text, btn) {
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.append(ta); ta.select();
+    try { ok = document.execCommand("copy"); } catch (e2) {}
+    ta.remove();
+  }
+  const label = btn.dataset.label || btn.textContent; btn.dataset.label = label;
+  btn.textContent = ok ? "복사했어요" : "복사하지 못했어요";
+  clearTimeout(btn._t); btn._t = setTimeout(() => { btn.textContent = label; }, 1600);
+}
+$("copyAll").onclick = () => {
+  const qs = [...shown()].sort((a, b) => (a.date || "").localeCompare(b.date || "") || (a.createdAt || 0) - (b.createdAt || 0));
+  const head = filter ? `생각조각집 · 「${filter}」` : "생각조각집";
+  const body = qs.map(q => `[${fmtDate(q.date)}${q.chapter && !filter ? " · " + q.chapter : ""}]\n` + pieceText(q)).join("\n\n");
+  copyText(head + "\n\n" + body, $("copyAll"));
+};
 
 /* ---------- 엑셀로 내려받기 ---------- */
 function loadScript(src) {
